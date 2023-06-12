@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="#" onsubmit="getValues(event)">
+        <h1> Form </h1>
+        <label for="name" class="form-label"> Name: </label>
+        <input type="text" id="name" name="uname" class="form-control"/>
+        <label for="email" class="form-label"> Email ID: </label>
+        <input type="text" id="email" name="uemail" class="form-control"/>
+        <label for="phone" class="form-label"> Phone No: </label>
+        <input type="number" id="phone" name="uphone" pattern="[0-9]{10}" class="form-control"/>
+        <button>Submit</button>
+    </form>
+
+    <ul id='listOfItems'></ul>
+
+    <script>
+
+        function getValues(event) {
+            event.preventDefault();
+            // const name = event.target.uname.value;
+            // const email = event.target.uemail.value
+            // const phone = event.target.uphone.value
+            const obj1 = {
+                name: event.target.uname.value,
+                email: event.target.uemail.value,
+                phone: event.target.uphone.value
+            }
+            let obj1_serialized = JSON.stringify(obj1);
+            localStorage.setItem(obj1.email , obj1_serialized); 
+            displayData(obj1);
+        }
+
+        function displayData(obj1) {
+            const parentItems = document.getElementById('listOfItems')
+            const childItems = document.createElement('li')
+            childItems.textContent = obj1.name + ' - ' + obj1.email + ' - ' + obj1.phone
+            const delBtn = document.createElement('input');
+            delBtn.type = 'button';
+            delBtn.value = 'Delete';
+            delBtn.onclick = () => {
+                localStorage.removeItem(obj1.email)
+                parentItems.removeChild(childItems)
+            }
+            const editBtn = document.createElement('input');
+            editBtn.type = 'button'
+            editBtn.value = 'Edit';
+            editBtn.onclick = () => {
+                localStorage.removeItem(obj1.email)
+                parentItems.removeChild(childItems)
+                document.getElementById('name').value = obj1.name;
+                document.getElementById('email').value = obj1.email;
+                document.getElementById('phone').value = obj1.phone;
+            }
+            childItems.appendChild(delBtn)
+            childItems.appendChild(editBtn)
+            parentItems.appendChild(childItems)
+        }
+    </script>
+</body>
+</html>
