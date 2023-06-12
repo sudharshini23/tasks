@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="#" onsubmit="getValues(event)">
+        <label> Name </label>
+        <input type="text" name="userName"/>
+        <label> Email ID </label>
+        <input type="email" name="emailID"/>
+        <label> Contact Number </label>
+        <input type="phone" name="phoneNum"/>
+        <button> Submit</button>
+    </form>
+
+    <ul id='listOfItems'></ul>
+
+    <script>
+        function getValues(event) {
+            event.preventDefault();
+            const name = event.target.userName.value;
+            const email = event.target.emailID.value
+            const phone = event.target.phoneNum.value
+            const obj1 = {
+                name,
+                email,
+                phone
+            }
+            localStorage.setItem(obj1.email, JSON.stringify(obj1)); 
+            displayData(obj1);
+        }
+
+        function displayData(obj1) {
+            const parentItems = document.getElementById('listOfItems')
+            const childItems = document.createElement('li')
+            childItems.textContent = obj1.name + ' - ' + obj1.email + ' - ' + obj1.phone
+            parentItems.appendChild(childItems)
+        }
+    </script>
+</body>
+</html>
