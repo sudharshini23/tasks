@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="sellerform" action="#" onsubmit="getValues(event)">
+        <label for="sellingprice" class="form-label"> Selling Price:  </label>
+        <input type="text" id="sellingprice" name="sp" class="form-control" />
+        <label for="productname" class="form-label"> Product Name: </label>
+        <input type="text" id="productname" name="name" class="form-control" />
+        <button>Submit</button>
+        <h1> Products </h1>
+    </form>
+
+    <ul id='listOfItems'></ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+
+    <script>
+
+        //var form = document.getElementById('sellerform');
+        //var itemList = document.getElementById('listOfItems'); 
+        
+        //itemList.addEventListener('click', removeUserFromScreen);
+
+        // var value = 0;
+
+        function getValues(event) {
+            event.preventDefault();
+        
+            const obj1 = {
+                sellingprice: event.target.sp.value,
+                productname: event.target.name.value,
+            } 
+
+            axios.post("https://crudcrud.com/api/3890affe887e4b1b82d2e553f2d1b57f/ProductDetails",obj1)
+            .then((response) => {
+                var value = response.data.sellingprice
+                displayData(response.data, value)
+                // console.log(value)
+                // for(var i = 0; i < response.data.length; i++) {
+                //     value =  value + (response.data.sellingprice[i])
+                // }
+                document.body.innerHTML = document.body.innerHTML + `<h2> Total Net Worth of Products: Rs </h2>`
+                // value =  value + (response.data.sellingprice)
+                document.body.innerHTML = document.body.innerHTML + `${value}`
+                // console.log(response)
+            })
+            .catch((err) => {
+                document.body.innerHTML = document.body.innerHTML + "<h4> Something went wrong </h4>"
+                console.log(err)
+            })
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            axios.get("https://crudcrud.com/api/3890affe887e4b1b82d2e553f2d1b57f/ProductDetails")
+            .then((response) => {
+                console.log(response)
+                for(var i = 0; i < response.data.length; i++) {
+                    displayData(response.data[i]);
+                    // value = value + (response.data.sellingprice[i])
+                }
+                // document.body.innerHTML = document.body.innerHTML + `<h2> Total Net Worth of Products: Rs ${value}</h2>`
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+        })
+
+        function displayData(obj1, value) {
+            const parentItems = document.getElementById('listOfItems')
+            const childItems = document.createElement('li')
+            childItems.id = obj1._id;
+            childItems.textContent = obj1.sellingprice + ' - ' + obj1.productname
+            const delBtn = document.createElement('input');
+            delBtn.type = 'button';
+            delBtn.className = 'delete';
+            delBtn.value = 'Delete Product';
+
+            delBtn.onclick = () => {
+
+                axios.delete(`https://crudcrud.com/api/3890affe887e4b1b82d2e553f2d1b57f/ProductDetails/${obj1._id}`)
+                .then((response) => {
+                    removeUserFromScreen(obj1._id)
+                    value = value - obj1.sellingprice
+                    document.body.innerHTML = document.body.innerHTML + `<h2> Total Net Worth of Products: Rs </h2>`
+                    document.body.innerHTML = document.body.innerHTML + `${value}`
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+            }
+
+            childItems.appendChild(delBtn)
+            parentItems.appendChild(childItems)
+            value = value + obj1.sellingprice
+            // document.body.innerHTML = document.body.innerHTML + `<h2> Total Net Worth of Products: Rs ${value}</h2>`
+            
+        }
+
+        function removeUserFromScreen(userId) {
+            const parentNode = document.getElementById('listOfItems');
+            const childNodeToBeDel = document.getElementById(userId);
+            if(childNodeToBeDel) {
+                parentNode.removeChild(childNodeToBeDel);
+            }
+            // value = value - childNodeToBeDel.sellingprice
+        }
+
+        console.log(value)
+    </script>
+</body>
+</html>
